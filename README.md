@@ -1,6 +1,6 @@
 #**Gym Management System**
 This Gym Management System is an online platform that helps gym owners manage members, handle billing, and distribute important notifications. Gym members can easily access their payment receipts, notifications, and other important information through the platform, while gym administrators can add members, generate bills, and manage gym operations.
-#**Table of Contents**
+#**Table of Contents** <br />
 i)Project Overview
 *Features
 *Technology Stack
