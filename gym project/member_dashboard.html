@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Dashboard - View Bills</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Member Dashboard</h1>
+
+    <h2>Your Bills</h2>
+    <div id="memberBillList">
+        <!-- Member's bills will be displayed here -->
+    </div>
+
+    <script type="module">
+        // Import the necessary Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBs5dilMDHrWjDZXE-y4l7hW6JtdlQEI_8",
+            authDomain: "gym-management-system-e340c.firebaseapp.com",
+            projectId: "gym-management-system-e340c",
+            databaseURL: "https://gym-management-system-e340c-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            storageBucket: "gym-management-system-e340c.appspot.com",
+            messagingSenderId: "1000657710027",
+            appId: "1:1000657710027:web:a70b0e5d8125d735c9a44e",
+            measurementId: "G-6BVHWQ6183",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Get logged in user's name from localStorage
+        const loggedInUser = localStorage.getItem("username");
+
+        // Fetch and display bills for the logged-in member
+        function fetchMemberBills() {
+            get(child(ref(db), "bills/" + loggedInUser)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const bills = snapshot.val();
+                    const billListDiv = document.getElementById("memberBillList");
+                    billListDiv.innerHTML = ""; // Clear previous list
+
+                    Object.keys(bills).forEach((billId) => {
+                        const billData = bills[billId];
+                        const billDiv = document.createElement("div");
+
+                        billDiv.innerHTML = `
+                            <p><strong>Amount:</strong> ${billData.Amount}</p>
+                            <p><strong>Fee Package:</strong> ${billData.FeePackage}</p>
+                            <p><strong>Date:</strong> ${new Date(billData.Timestamp).toLocaleString()}</p>
+                            <hr>
+                        `;
+                        billListDiv.appendChild(billDiv);
+                    });
+                } else {
+                    document.getElementById("memberBillList").innerHTML = "<p>No bills found.</p>";
+                }
+            }).catch((error) => {
+                alert("Error: " + error.message);
+            });
+        }
+
+        // Fetch bills on page load
+        fetchMemberBills();
+    </script>
+</body>
+</html>

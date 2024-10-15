@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>User Dashboard</h1>
+    <h2>Your Details</h2>
+    <div id="userDetails">
+        <!-- User details will be displayed here -->
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBs5dilMDHrWjDZXE-y4l7hW6JtdlQEI_8",
+            authDomain: "gym-management-system-e340c.firebaseapp.com",
+            projectId: "gym-management-system-e340c",
+            databaseURL: "https://gym-management-system-e340c-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            storageBucket: "gym-management-system-e340c.appspot.com",
+            messagingSenderId: "1000657710027",
+            appId: "1:1000657710027:web:a70b0e5d8125d735c9a44e",
+            measurementId: "G-6BVHWQ6183",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Function to fetch user details
+        function fetchUserDetails(username) {
+            get(child(ref(db), "users/" + username)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    document.getElementById("userDetails").innerHTML = `
+                        <p><strong>Full Name:</strong> ${userData.FullName}</p>
+                        <p><strong>Email:</strong> ${userData.Email}</p>
+                        <p><strong>Address:</strong> ${userData.Address}</p>
+                        <p><strong>Phone Number:</strong> ${userData.PhoneNumber}</p>
+                        <p><strong>Nationality:</strong> ${userData.Nationality}</p>
+                    `;
+                } else {
+                    document.getElementById("userDetails").innerText = "User not found.";
+                }
+            }).catch((error) => {
+                alert("Error: " + error.message);
+            });
+        }
+
+        // Get the username from local storage or redirect to login
+        const username = localStorage.getItem('username'); // Ensure the username is stored when logged in
+        if (username) {
+            fetchUserDetails(username);
+        } else {
+            alert("Please log in to view your details.");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+    </script>
+</body>
+</html>
